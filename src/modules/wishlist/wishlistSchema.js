@@ -3,7 +3,7 @@ const sequelize = require('../../config/database');
 const User = require('../user/userSchema');
 const Product = require('../product/productSchema');
 
-const Order = sequelize.define('Order', {
+const Wishlist = sequelize.define('Wishlist', {
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -20,18 +20,6 @@ const Order = sequelize.define('Order', {
       key: 'id',
     },
   },
-  quantity: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  totalAmount: {
-    type: DataTypes.FLOAT,
-    allowNull: false,
-  },
-  status: {
-    type: DataTypes.STRING,
-    defaultValue: 'pending',
-  },
 });
 
-module.exports = Order;
+module.exports = Wishlist;

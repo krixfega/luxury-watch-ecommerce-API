@@ -5,6 +5,8 @@ const productRoutes = require('./modules/product/productRoutes');
 const orderRoutes = require('./modules/order/orderRoutes');
 const paymentRoutes = require('./modules/payment/paymentRoutes');
 const reviewRoutes = require('./modules/review/reviewRoutes');
+const wishlistRoutes = require('./modules/wishlist/wishlistRoutes');
+const adminRoutes = require('./modules/admin/adminRoutes');
 const errorHandler = require('./middlewares/errorHandler');
 require('dotenv').config();
 const sequelize = require('./config/database');
@@ -17,6 +19,8 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Error handling middleware should be the last middleware
 app.use(errorHandler);

@@ -9,6 +9,10 @@ class OrderRepository {
     return await OrderSchema.findByPk(id);
   }
 
+  async getAllOrders() {
+    return await OrderSchema.findAll();
+  }
+
   async updateOrder(id, orderData) {
     const order = await OrderSchema.findByPk(id);
     if (order) {

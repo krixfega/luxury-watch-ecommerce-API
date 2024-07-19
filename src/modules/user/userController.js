@@ -1,18 +1,16 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const UserRepository = require('./userRepository');
-const NotificationService = require('../../services/notificationService');
 require('dotenv').config();
 
 const tokenBlacklist = new Set();
 
 class UserController {
   async register(req, res) {
-    const { username, email, password } = req.body;
+    const { username, email, password, isAdmin } = req.body;
     const hashedPassword = await bcrypt.hash(password, 8);
-    const user = await UserRepository.createUser({ username, email, password: hashedPassword });
+    const user = await UserRepository.createUser({ username, email, password: hashedPassword, isAdmin });
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-    NotificationService.sendAccountCreatedNotification(user);
     res.status(201).send({ user, token });
   }
 
@@ -23,7 +21,6 @@ class UserController {
       return res.status(400).send({ error: 'Invalid login credentials' });
     }
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-    NotificationService.sendLoginNotification(user);
     res.send({ user, token });
   }
 

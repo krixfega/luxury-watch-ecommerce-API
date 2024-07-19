@@ -1,27 +1,43 @@
-const ProductRepository = require('./productRepository');
+const UserRepository = require('../user/userRepository');
+const ProductRepository = require('../product/productRepository');
+const OrderRepository = require('../order/orderRepository');
 
-class ProductController {
-  async getAllProducts(req, res) {
+class AdminController {
+  // User Management
+  async getAllUsers(req, res) {
     try {
-      const products = await ProductRepository.getAllProducts();
-      res.send(products);
+      const users = await UserRepository.getAllUsers();
+      res.send(users);
     } catch (error) {
       res.status(500).send({ error: error.message });
     }
   }
 
-  async getProductById(req, res) {
+  async updateUser(req, res) {
     try {
-      const product = await ProductRepository.getProductById(req.params.id);
-      if (!product) {
-        return res.status(404).send({ error: 'Product not found' });
+      const user = await UserRepository.updateUser(req.params.id, req.body);
+      if (!user) {
+        return res.status(404).send({ error: 'User not found' });
       }
-      res.send(product);
+      res.send(user);
     } catch (error) {
       res.status(500).send({ error: error.message });
     }
   }
 
+  async deleteUser(req, res) {
+    try {
+      const isDeleted = await UserRepository.deleteUser(req.params.id);
+      if (!isDeleted) {
+        return res.status(404).send({ error: 'User not found' });
+      }
+      res.send({ message: 'User deleted' });
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
+  }
+
+  // Product Management
   async createProduct(req, res) {
     try {
       const product = await ProductRepository.createProduct(req.body);
@@ -55,25 +71,27 @@ class ProductController {
     }
   }
 
-  async searchProducts(req, res) {
-    const { query } = req.query;
+  // Order Management
+  async getAllOrders(req, res) {
     try {
-      const products = await ProductRepository.searchProducts(query);
-      res.send(products);
+      const orders = await OrderRepository.getAllOrders();
+      res.send(orders);
     } catch (error) {
       res.status(500).send({ error: error.message });
     }
   }
 
-  async filterProducts(req, res) {
-    const { priceMin, priceMax, rating, category } = req.query;
+  async updateOrderStatus(req, res) {
     try {
-      const products = await ProductRepository.filterProducts(priceMin, priceMax, rating, category);
-      res.send(products);
+      const order = await OrderRepository.updateOrder(req.params.id, req.body);
+      if (!order) {
+        return res.status(404).send({ error: 'Order not found' });
+      }
+      res.send(order);
     } catch (error) {
       res.status(500).send({ error: error.message });
     }
   }
 }
 
-module.exports = new ProductController();
+module.exports = new AdminController();

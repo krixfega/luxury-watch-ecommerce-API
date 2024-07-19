@@ -14,6 +14,10 @@ const ProductSchema = sequelize.define('Product', {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
+  rating: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+  },
   stock: {
     type: DataTypes.INTEGER,
     allowNull: false,
