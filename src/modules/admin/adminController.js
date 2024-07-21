@@ -92,6 +92,38 @@ class AdminController {
       res.status(500).send({ error: error.message });
     }
   }
+
+  async getSalesAnalytics(req, res) {
+    try {
+      const totalSales = await OrderRepository.getTotalSales();
+      const totalOrders = await OrderRepository.getTotalOrders();
+      const salesByProduct = await OrderRepository.getSalesByProduct();
+      const salesByCategory = await OrderRepository.getSalesByCategory();
+      const monthlySales = await OrderRepository.getMonthlySales();
+      res.send({
+        totalSales,
+        totalOrders,
+        salesByProduct,
+        salesByCategory,
+        monthlySales,
+      });
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
+  }
+
+  async getUserAnalytics(req, res) {
+    try {
+      const totalUsers = await UserRepository.getTotalUsers();
+      const userSignUpsPerMonth = await UserRepository.getUserSignUpsPerMonth();
+      res.send({
+        totalUsers,
+        userSignUpsPerMonth,
+      });
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
+  }
 }
 
 module.exports = new AdminController();

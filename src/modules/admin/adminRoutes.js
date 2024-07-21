@@ -15,4 +15,7 @@ router.delete('/products/:id', adminAuth, AdminController.deleteProduct);
 router.get('/orders', adminAuth, AdminController.getAllOrders);
 router.put('/orders/:id', adminAuth, AdminController.updateOrderStatus);
 
+router.get('/analytics/sales', adminAuth, AdminController.getSalesAnalytics);
+router.get('/analytics/users', adminAuth, AdminController.getUserAnalytics);
+
 module.exports = router;

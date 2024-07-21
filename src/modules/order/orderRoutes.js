@@ -5,12 +5,12 @@ const adminAuth = require('../../middlewares/adminAuth');
 
 const router = express.Router();
 
-// User can create and view orders
-router.post('/', auth, OrderController.createOrder);
-router.get('/:id', auth, OrderController.getOrderById);
+// User can view and track their orders
+router.get('/history', auth, OrderController.getOrderHistory);
+router.get('/track/:id', auth, OrderController.trackOrder);
 
 // Admin can perform CRUD operations on orders
-router.get('/', adminAuth, OrderController.getAllOrders);
+router.post('/', adminAuth, OrderController.createOrder);
 router.put('/:id', adminAuth, OrderController.updateOrder);
 router.delete('/:id', adminAuth, OrderController.deleteOrder);
 

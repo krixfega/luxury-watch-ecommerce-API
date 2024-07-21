@@ -1,4 +1,5 @@
 const UserSchema = require('./userSchema');
+const { Sequelize } = require('sequelize'); 
 
 class UserRepository {
   async createUser(userData) {
@@ -32,6 +33,20 @@ class UserRepository {
       return true;
     }
     return false;
+  }
+
+  async getTotalUsers() {
+    return await UserSchema.count();
+  }
+
+  async getUserSignUpsPerMonth() {
+    return await UserSchema.findAll({
+      attributes: [
+        [Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('createdAt')), 'month'],
+        [Sequelize.fn('COUNT', Sequelize.col('id')), 'signUps'],
+      ],
+      group: [Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('createdAt'))],
+    });
   }
 }
 

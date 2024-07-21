@@ -32,6 +32,12 @@ const Order = sequelize.define('Order', {
     type: DataTypes.STRING,
     defaultValue: 'pending',
   },
+  deliveryStatus: {
+    type: DataTypes.STRING,
+    defaultValue: 'not shipped',
+  },
 });
+
+Order.belongsTo(Product, { foreignKey: 'productId', as: 'product' });
 
 module.exports = Order;

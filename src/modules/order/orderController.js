@@ -58,6 +58,27 @@ class OrderController {
     }
     res.send({ message: 'Order deleted' });
   }
+
+  async getOrderHistory(req, res) {
+    try {
+      const orders = await OrderRepository.getOrderHistory(req.user.id);
+      res.send(orders);
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
+  }
+
+  async trackOrder(req, res) {
+    try {
+      const order = await OrderRepository.trackOrder(req.params.id, req.user.id);
+      if (!order) {
+        return res.status(404).send({ error: 'Order not found' });
+      }
+      res.send(order);
+    } catch (error) {
+      res.status(500).send({ error: error.message }); 
+    }
+  }
 }
 
 module.exports = new OrderController();
