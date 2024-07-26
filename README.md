@@ -43,13 +43,13 @@ This is a backend API for a multipurpose e-commerce platform. The API supports u
    cd luxury-watch-ecommerce
 
 2. Install dependencies
-
+   ```sh
    npm install
 
 3. Configure Environment Variables
     
     Create a .env file in the root directory and add the following environment variables:
-
+    ```sh
     PORT=3001
     DATABASE_URL=postgres://
     JWT_SECRET=your_jwt_secret
@@ -62,13 +62,13 @@ This is a backend API for a multipurpose e-commerce platform. The API supports u
 4. Database Migration
     
     Run the following command to create and migrate the database:
-
+    ```sh
     npx sequelize-cli db:migrate
 
 5. Running the Server
     
     Start the development server:
-
+    ```sh
     node src/index.js
 
     The server will start on http://localhost:3001.
