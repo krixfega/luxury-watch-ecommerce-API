@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const UserRepository = require('./userRepository');
+const TokenService = require('../../services/tokenService');
 require('dotenv').config();
 
 const tokenBlacklist = new Set();
@@ -16,22 +17,78 @@ class UserController {
 
   async login(req, res) {
     const { email, password } = req.body;
-    const user = await UserRepository.findUserByEmail(email);
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(400).send({ error: 'Invalid login credentials' });
+
+    try {
+      const user = await UserRepository.getUserByEmail(email);
+      if (!user || !bcrypt.compareSync(password, user.password)) {
+        return res.status(401).send({ error: 'Invalid email or password' });
+      }
+
+      const accessToken = TokenService.generateAccessToken(user);
+      const refreshToken = TokenService.generateRefreshToken(user);
+
+      // Store the refresh token in the database
+      await UserRepository.saveRefreshToken(user.id, refreshToken);
+
+      res.send({
+        accessToken,
+        refreshToken,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          isAdmin: user.isAdmin,
+        },
+      });
+    } catch (error) {
+      res.status(500).send({ error: error.message });
     }
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-    res.send({ user, token });
   }
 
   async getUserProfile(req, res) {
     res.send(req.user);
   }
 
+  async refreshToken(req, res) {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(401).send({ error: 'Refresh token is required' });
+    }
+
+    try {
+      const decoded = TokenService.verifyRefreshToken(token);
+      const refreshToken = await UserRepository.getRefreshToken(token);
+
+      if (!refreshToken) {
+        return res.status(401).send({ error: 'Invalid refresh token' });
+      }
+
+      const user = await UserRepository.getUserById(decoded.id);
+      const newAccessToken = TokenService.generateAccessToken(user);
+      const newRefreshToken = TokenService.generateRefreshToken(user);
+
+      await UserRepository.saveRefreshToken(user.id, newRefreshToken);
+      await UserRepository.deleteRefreshToken(token);
+
+      res.send({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      });
+    } catch (error) {
+      res.status(401).send({ error: 'Invalid refresh token' });
+    }
+  }
+
   async logout(req, res) {
-    const token = req.header('Authorization').replace('Bearer ', '');
-    tokenBlacklist.add(token);
-    res.send({ message: 'Logged out successfully' });
+    const { token } = req.body;
+
+    try {
+      await UserRepository.deleteRefreshToken(token);
+      res.send({ message: 'Logged out successfully' });
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
   }
 
   isTokenBlacklisted(token) {

@@ -2,6 +2,7 @@ const express = require('express');
 const ProductController = require('./productController');
 const auth = require('../../middlewares/auth');
 const adminAuth = require('../../middlewares/adminAuth');
+const upload = require('../../services/cloudinaryService');
 
 const router = express.Router();
 
@@ -14,8 +15,8 @@ router.get('/', ProductController.getAllProducts);
 router.get('/:id', ProductController.getProductById);
 
 // Admin can perform CRUD operations on products
-router.post('/', adminAuth, ProductController.createProduct);
-router.put('/:id', adminAuth, ProductController.updateProduct);
+router.post('/', adminAuth, upload.single('image'), ProductController.createProduct);
+router.put('/:id', adminAuth, upload.single('image'), ProductController.updateProduct);
 router.delete('/:id', adminAuth, ProductController.deleteProduct);
 
 module.exports = router;

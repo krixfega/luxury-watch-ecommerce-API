@@ -1,4 +1,5 @@
 const UserSchema = require('./userSchema');
+const RefreshTokenSchema = require('./refreshTokenSchema');
 const { Sequelize } = require('sequelize'); 
 
 class UserRepository {
@@ -47,6 +48,22 @@ class UserRepository {
       ],
       group: [Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('createdAt'))],
     });
+  }
+
+  async getUserByEmail(email) {
+    return await UserSchema.findOne({ where: { email } });
+  }
+
+  async saveRefreshToken(userId, refreshToken) {
+    return await RefreshTokenSchema.create({ userId, token: refreshToken });
+  }
+
+  async getRefreshToken(token) {
+    return await RefreshTokenSchema.findOne({ where: { token } });
+  }
+
+  async deleteRefreshToken(token) {
+    return await RefreshTokenSchema.destroy({ where: { token } });
   }
 }
 

@@ -9,4 +9,7 @@ router.post('/login', UserController.login);
 router.get('/profile', auth, UserController.getUserProfile);
 router.post('/logout', auth, UserController.logout);
 
+// Refresh token
+router.post('/token', UserController.refreshToken);
+
 module.exports = router;

@@ -23,8 +23,18 @@ class ProductController {
   }
 
   async createProduct(req, res) {
+    const { name, price, category, rating } = req.body;
+    const imageUrl = req.file ? req.file.path : null;
+
     try {
-      const product = await ProductRepository.createProduct(req.body);
+      const product = await ProductRepository.createProduct({
+        name,
+        price,
+        category,
+        rating,
+        imageUrl,
+      });
+
       res.status(201).send(product);
     } catch (error) {
       res.status(500).send({ error: error.message });
@@ -32,11 +42,22 @@ class ProductController {
   }
 
   async updateProduct(req, res) {
+    const { name, price, category, rating } = req.body;
+    const imageUrl = req.file ? req.file.path : null;
+
     try {
-      const product = await ProductRepository.updateProduct(req.params.id, req.body);
+      const product = await ProductRepository.updateProduct(req.params.id, {
+        name,
+        price,
+        category,
+        rating,
+        imageUrl,
+      });
+
       if (!product) {
         return res.status(404).send({ error: 'Product not found' });
       }
+
       res.send(product);
     } catch (error) {
       res.status(500).send({ error: error.message });

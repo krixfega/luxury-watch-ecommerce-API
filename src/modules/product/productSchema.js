@@ -26,6 +26,10 @@ const ProductSchema = sequelize.define('Product', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  imageUrl: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
 
 module.exports = ProductSchema;
